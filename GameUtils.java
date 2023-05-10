@@ -6,13 +6,13 @@ public class GameUtils {
      * @param p the point of the tile
      * @return the neighbors of the tile
      */
-    public static MinesweeperTile[][] getNeighbors(MinesweeperTile[][] grid, Point p) {
+    public static MinesweeperTile[] getNeighbors(MinesweeperTile[][] grid, Point p) {
         // TODO - implement GameUtils.getNeighbors 
         return null ;
     }
 
 
-    
+
 
 
     
