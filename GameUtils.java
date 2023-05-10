@@ -82,11 +82,5 @@ public class GameUtils {
             neighbors[7] = grid[p.getX()+1][p.getY()+1]; 
         }
         return neighbors;
-    }
-
-
-
-
-
-    
+    }    
 }
