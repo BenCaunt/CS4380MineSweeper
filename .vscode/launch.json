@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "texttest",
+            "request": "launch",
+            "mainClass": "texttest",
+            "projectName": "CS4380MineSweeper_34a409d5"
+        },
+        {
+            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "Main",
