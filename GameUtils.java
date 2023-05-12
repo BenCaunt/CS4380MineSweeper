@@ -116,8 +116,6 @@ public class GameUtils {
             }
         }
     }
-    
-    
 
     public static int countAdjacentMines(MinesweeperTile[][] grid, MinesweeperTile t) {
         List<MinesweeperTile> neighbors = getNeighbors(grid, t);
@@ -132,6 +130,20 @@ public class GameUtils {
         return adjacentMines;
     }
  
-
+    public static void failure(MinesweeperTile[][] grid, int dim) {
+        
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                if (grid[i][j].isBomb) {
+                    grid[i][j].setStyle("-fx-fill: black; -fx-stroke: black; -fx-stroke-width: 1;");
+                }
+                else if (grid[i][j].isRevealed) {
+                    grid[i][j].setStyle("-fx-fill: Darkred; -fx-stroke: black; -fx-stroke-width: 1;");
+                } else if (!grid[i][j].isRevealed) {
+                    grid[i][j].setStyle("-fx-fill: red; -fx-stroke: black; -fx-stroke-width: 1;");
+                }
+            }
+        }
+    }    
     
 }
