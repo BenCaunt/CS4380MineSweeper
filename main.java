@@ -1,13 +1,12 @@
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
+
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 
-public class main extends Application {
+public class Main extends Application {
 
   int window_width = 600;
   int grid_count_width = 20;
@@ -29,7 +28,7 @@ public class main extends Application {
     for (int i = 0; i < grid_count_width; i++) {
       for (int j = 0; j < grid_count_height; j++) {
 
-        grid[i][j] = new MinesweeperTile(grid_width, grid_width);
+        grid[i][j] = new MinesweeperTile(grid_width, grid_width, new Point(i, j));
       }
     }
 
@@ -52,9 +51,6 @@ public class main extends Application {
 
 
 
-
-
-
     Scene scene = new Scene(root, window_width, window_width);
     
 
@@ -64,9 +60,6 @@ public class main extends Application {
     primaryStage.setScene(scene);
 
     primaryStage.show();
-
-
-
 
 
   }
@@ -97,13 +90,21 @@ public class main extends Application {
     // on right click reveal the tile or ctrl + primary click
     for (int i = 0; i < grid_count_width; i++) {
       for (int j = 0; j < grid_count_height; j++) {
+
+
         MinesweeperTile r = grid[i][j];
         r.setOnMouseClicked(e -> {
-          if (e.getButton().toString().equals("SECONDARY") || (e.getButton().toString().equals("PRIMARY") && e.isControlDown())) {
-            r.setRevealed(true);
-            System.out.println("reveal");
 
-            r.setStyleFromBooleanFlags();
+          if (!haveMinesBeenGenerated) {
+            GameUtils.generateMines(grid, r.getPoint(), num_mines, grid_count_width, grid_count_height);
+            haveMinesBeenGenerated = true;
+            return; 
+          }
+
+
+          if (e.getButton().toString().equals("SECONDARY") || (e.getButton().toString().equals("PRIMARY") && e.isControlDown())) {
+            System.out.println(r.getPoint());
+            GameUtils.reveal(grid, r);
           }
           if (e.getButton().toString().equals("PRIMARY") && !e.isControlDown()) {
             System.out.println("left");
@@ -115,7 +116,6 @@ public class main extends Application {
         });
       }
     }
-
 
   }
 

@@ -1,4 +1,6 @@
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 public class GameUtils {
 
@@ -9,84 +11,127 @@ public class GameUtils {
      * @return the neighbors of the tile
      */
     
-    public static MinesweeperTile[] getNeighbors(MinesweeperTile[][] grid, Point p) {
-        MinesweeperTile[] neighbors = new MinesweeperTile[8]; 
-        int max = grid.length-1; 
-        // RIGHT wall and corners        
-        if (p.getX() == 0) {
+    public static List<MinesweeperTile> getNeighbors(MinesweeperTile[][] grid, MinesweeperTile t) {
 
-            // top corner 
-            if (p.getY() == 0) {
-                neighbors[0] = grid[0][1]; 
-                neighbors[1] = grid[1][0]; 
-                neighbors[2] = grid[1][1]; 
-            }
-            // bottom corner 
-            else if (p.getY() == max){
-                neighbors[0] = grid[0][max-1]; 
-                neighbors[1] = grid[1][max]; 
-                neighbors[2] = grid[1][max-1]; 
-            } else {
-                neighbors[0] = grid[0][p.getY()-1]; 
-                neighbors[1] = grid[1][p.getY()-1]; 
-                neighbors[2] = grid[1][p.getY()]; 
-                neighbors[3] = grid[1][p.getY()+1]; 
-                neighbors[4] = grid[0][p.getY()+1]; 
-            }
-        }
-        // LEFT wall and corners        
-        else if (p.getX() == max) {
-            // top corner 
-            if (p.getY() == 0) {
-                neighbors[0] = grid[max-1][0]; 
-                neighbors[1] = grid[max-1][1]; 
-                neighbors[2] = grid[max][1]; 
-            }
-            // bottom corner 
-            else if (p.getY() == max){
-                neighbors[0] = grid[max-1][max]; 
-                neighbors[1] = grid[max-1][max-1]; 
-                neighbors[2] = grid[max][max-1]; 
-            } else {
-                neighbors[0] = grid[max][p.getY()-1]; 
-                neighbors[1] = grid[max-1][p.getY()-1]; 
-                neighbors[2] = grid[max-1][p.getY()]; 
-                neighbors[3] = grid[max-1][p.getY()+1]; 
-                neighbors[4] = grid[max][p.getY()+1]; 
-            }
-        }
-        // TOP wall
-        else if (p.getY() == 0) {
-            neighbors[0] = grid[0][p.getX()-1]; 
-            neighbors[1] = grid[1][p.getX()-1]; 
-            neighbors[2] = grid[1][p.getX()]; 
-            neighbors[3] = grid[1][p.getX()+1]; 
-            neighbors[4] = grid[0][p.getX()+1]; 
-        }
-        // BOTTOM wall 
-        else if (p.getY() == max) {
-            neighbors[0] = grid[p.getX()-1][max]; 
-            neighbors[1] = grid[p.getX()-1][max-1]; 
-            neighbors[2] = grid[p.getX()][max-1]; 
-            neighbors[3] = grid[p.getX()+1][max-1];  
-            neighbors[4] = grid[p.getX()+1][max]; 
-        } else {
-            neighbors[0] = grid[p.getX()-1][p.getY()-1]; 
-            neighbors[1] = grid[p.getX()-1][p.getY()]; 
-            neighbors[2] = grid[p.getX()-1][p.getY()+1]; 
-            neighbors[3] = grid[p.getX()][p.getY()-1]; 
+        List<MinesweeperTile> neighbors = new ArrayList<MinesweeperTile>();
+        System.out.println(t.getPoint() + " 911");
 
-            neighbors[4] = grid[p.getX()][p.getY()+1]; 
-            neighbors[5] = grid[p.getX()+1][p.getY()-1]; 
-            neighbors[6] = grid[p.getX()+1][p.getY()]; 
-            neighbors[7] = grid[p.getX()+1][p.getY()+1]; 
+        int x = t.getPoint().getX();
+        int y = t.getPoint().getY();
+        System.out.println("x: " + x + " y: " + y);
+
+        // top left
+        if (x - 1 >= 0 && y - 1 >= 0) {
+            neighbors.add(grid[x - 1][y - 1]);
+            System.out.println("top left");
         }
-        return neighbors;
+        // top
+        if (y - 1 >= 0) {
+            neighbors.add(grid[x][y - 1]);
+            System.out.println("top");
+        }
+        // top right
+        if (x + 1 < grid.length && y - 1 >= 0) {
+            neighbors.add(grid[x + 1][y - 1]);
+            System.out.println("top right");
+        }
+        // right
+        if (x + 1 < grid.length) {
+            neighbors.add(grid[x + 1][y]);
+            System.out.println("right");
+        }
+        // bottom right
+        if (x + 1 < grid.length && y + 1 < grid[0].length) {
+            neighbors.add(grid[x + 1][y + 1]);
+            System.out.println("bottom right");
+        }
+        // bottom
+        if (y + 1 < grid[0].length) {
+            neighbors.add(grid[x][y + 1]);
+            System.out.println("bottom");
+        }
+        // bottom left
+        if (x - 1 >= 0 && y + 1 < grid[0].length) {
+            neighbors.add(grid[x - 1][y + 1]);
+            System.out.println("bottom left");
+        }
+        // left
+        if (x - 1 >= 0) {
+            neighbors.add(grid[x - 1][y]);
+            System.out.println("left");
+        }
+
+
+        return neighbors; 
+     
     }
 
+    /**
+     * generate the mines of the game, excluding the first click
+     * @param grid the grid of tiles
+     * @param firstclick the first click of the game
+     */
+    public static void generateMines(MinesweeperTile[][] grid, Point firstclick, int num_mines, int grid_count_width, int grid_count_height) {
+        for (int i = 0; i < num_mines; i++) {
+            Point p = new Point((int) (Math.random() * grid_count_width), (int) (Math.random() * grid_count_height));
+            // make sure the first click is not a bomb
+            while (p.equals(firstclick) || grid[p.getX()][p.getY()].isBomb()) {
 
+                p = new Point((int) (Math.random() * grid_count_width), (int) (Math.random() * grid_count_height));
+            }
+            // set the bomb
+            grid[p.getX()][p.getY()].setBomb(true);
+        }
 
+    }
 
+    public static void reveal(MinesweeperTile[][] grid, MinesweeperTile r) {
+        Stack<MinesweeperTile> tileStack = new Stack<>();
+        tileStack.push(r);
+    
+        while (!tileStack.isEmpty()) {
+            MinesweeperTile currentTile = tileStack.pop();
+    
+            if (currentTile.isRevealed()) {
+                continue;
+            }
+    
+            currentTile.setRevealed(true);
+            currentTile.setStyleFromBooleanFlags();
+    
+            if (currentTile.isBomb()) {
+                continue;
+            }
+    
+            int adjacentMines = countAdjacentMines(grid, currentTile);
+            currentTile.setAdjacentMines(adjacentMines);
+    
+            if (adjacentMines == 0) {
+                List<MinesweeperTile> neighbors = getNeighbors(grid, currentTile);
+                for (MinesweeperTile neighbor : neighbors) {
+                    if (neighbor != null && !neighbor.isRevealed()) {
+                        tileStack.push(neighbor);
+                    }
+                }
+            }
+        }
+    }
+    
+    
+
+    public static int countAdjacentMines(MinesweeperTile[][] grid, MinesweeperTile t) {
+        List<MinesweeperTile> neighbors = getNeighbors(grid, t);
+        int adjacentMines = 0;
+    
+        for (MinesweeperTile neighbor : neighbors) {
+            if (neighbor != null && neighbor.isBomb()) {
+                adjacentMines++;
+            }
+        }
+    
+        return adjacentMines;
+    }
+ 
 
     
 }
