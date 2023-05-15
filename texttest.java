@@ -11,7 +11,7 @@ public class texttest extends Application{
     @Override
     public void start(Stage primaryStage) {
 
-        Text text = new Text("PENIS");
+        Text text = new Text("");
         MinesweeperTile tile = new MinesweeperTile(40, 40, new Point(40, 40));
         tile.setStyle("-fx-fill: gray; -fx-stroke: black; -fx-stroke-width: 1;");
         StackPane stack = new StackPane();

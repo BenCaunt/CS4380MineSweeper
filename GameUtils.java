@@ -100,7 +100,7 @@ public class GameUtils {
             currentTile.setStyleFromBooleanFlags();
     
             if (currentTile.isBomb()) {
-                continue;
+                return;
             }
     
             int adjacentMines = countAdjacentMines(grid, currentTile);
@@ -116,6 +116,7 @@ public class GameUtils {
             }
         }
     }
+    
     
     
 
