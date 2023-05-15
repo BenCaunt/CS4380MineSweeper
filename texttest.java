@@ -22,6 +22,7 @@ public class texttest extends Application{
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException {
 
+
         int number = 1;
         Text text = new Text("" + number);
         //Creating an image 

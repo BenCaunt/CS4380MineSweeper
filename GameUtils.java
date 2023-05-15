@@ -100,7 +100,7 @@ public class GameUtils {
             currentTile.setStyleFromBooleanFlags();
     
             if (currentTile.isBomb()) {
-                continue;
+                return;
             }
     
             int adjacentMines = countAdjacentMines(grid, currentTile);
@@ -145,5 +145,32 @@ public class GameUtils {
             }
         }
     }    
+
+    public static boolean checkForWin(MinesweeperTile[][] grid) {
+        for (MinesweeperTile[] row : grid) {
+            for (MinesweeperTile tile : row) {
+                if (!tile.isRevealed() && !tile.isBomb()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static void success(MinesweeperTile[][] grid, int dim) {
+        
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                if (grid[i][j].isBomb) {
+                    grid[i][j].setStyle("-fx-fill: black; -fx-stroke: black; -fx-stroke-width: 1;");
+                }
+                else if (grid[i][j].isRevealed) {
+                    grid[i][j].setStyle("-fx-fill: green; -fx-stroke: black; -fx-stroke-width: 1;");
+                } else if (!grid[i][j].isRevealed) {
+                    grid[i][j].setStyle("-fx-fill: green; -fx-stroke: black; -fx-stroke-width: 1;");
+                }
+            }
+        }
+    }
     
 }
