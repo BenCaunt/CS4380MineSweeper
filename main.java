@@ -45,23 +45,15 @@ public class Main extends Application {
     // we want to highlight the grid when the mouse is over it
     highlightMechanic(grid);
 
-
     // reveal tile
     revealAndFlag(grid);
 
-
-
-    Scene scene = new Scene(root, window_width, window_width);
-    
-
-
-    
+    Scene scene = new Scene(root, window_width*2, window_width+10);
+      
     primaryStage.setTitle("Hello World!");
     primaryStage.setScene(scene);
 
     primaryStage.show();
-
-
   }
 
   public static void main(String[] args) {
@@ -84,13 +76,11 @@ public class Main extends Application {
   }
 
 
-
   public void revealAndFlag(MinesweeperTile[][] grid) {
 
     // on right click reveal the tile or ctrl + primary click
     for (int i = 0; i < grid_count_width; i++) {
       for (int j = 0; j < grid_count_height; j++) {
-
 
         MinesweeperTile r = grid[i][j];
         r.setOnMouseClicked(e -> {
@@ -101,14 +91,16 @@ public class Main extends Application {
             return; 
           }
 
-
+          // reveal 
           if (e.getButton().toString().equals("SECONDARY") || (e.getButton().toString().equals("PRIMARY") && e.isControlDown())) {
-            System.out.println(r.getPoint());
             GameUtils.reveal(grid, r);
+            if (r.isBomb) {
+              GameUtils.failure(grid, grid_count_width);
+            }
           }
+          // flag
           if (e.getButton().toString().equals("PRIMARY") && !e.isControlDown()) {
             System.out.println("left");
-
             r.setFlagged(true);
             r.setStyleFromBooleanFlags();
           }
