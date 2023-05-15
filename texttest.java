@@ -12,18 +12,36 @@ import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Pos;
 import javafx.scene.text.Text; 
+import java.io.FileInputStream; 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;  
+import java.io.FileNotFoundException; 
 
 public class texttest extends Application{
     
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws FileNotFoundException {
 
         int number = 1;
         Text text = new Text("" + number);
+        //Creating an image 
+        Image image = new Image(new FileInputStream("pushaTest.jpg"));  
+    
+        //Setting the image view 
+        ImageView imageView = new ImageView(image); 
+
+        
+        //setting the fit height and width of the image view 
+        imageView.setFitHeight(30); 
+        imageView.setFitWidth(30); 
+        
+        //Setting the preserve ratio of the image view 
+        imageView.setPreserveRatio(true);  
+                  
         MinesweeperTile tile = new MinesweeperTile(40, 40, new Point(40, 40));
-        tile.setStyle("-fx-fill: gray; -fx-stroke: black; -fx-stroke-width: 1;");
+        tile.setStyle("-fx-fill: red; -fx-stroke: black; -fx-stroke-width: 1;");
         StackPane stack = new StackPane();
-        stack.getChildren().addAll(tile, text);
+        stack.getChildren().addAll(tile, imageView, text);
         VBox layout = new VBox(20);
         layout.setAlignment(Pos.CENTER);
         layout.getChildren().addAll(stack);
