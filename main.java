@@ -11,10 +11,10 @@ import javafx.scene.text.Text;
 public class Main extends Application {
 
   int window_width = 600;
-  int grid_count_width = 20;
+  int grid_count_width = 25;
   int grid_count_height = grid_count_width; // square grid
   int grid_width = window_width / grid_count_width; 
-  double mine_density = 0.1; // 10% of the grid is mines
+  double mine_density = 0.10; // 10% of the grid is mines
   int num_mines = (int) (grid_count_width * grid_count_height * mine_density);
 
   boolean haveMinesBeenGenerated = false;
@@ -188,9 +188,8 @@ public class Main extends Application {
       case 8: 
         return "Gray";
       default:
-        break;
+        return "white";
     }
-    return "white";
   }
 
 }
