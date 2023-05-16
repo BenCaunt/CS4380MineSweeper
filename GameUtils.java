@@ -60,8 +60,6 @@ public class GameUtils {
             neighbors.add(grid[x - 1][y]);
             System.out.println("left");
         }
-
-
         return neighbors; 
      
     }

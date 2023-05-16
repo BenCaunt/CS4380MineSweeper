@@ -6,7 +6,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-
+import java.io.FileInputStream; 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;  
+import java.io.FileNotFoundException; 
+import java.io.File;
+import java.io.IOException;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
 
 public class Main extends Application {
 
@@ -23,10 +30,8 @@ public class Main extends Application {
 
   Point mines[] = new Point[num_mines];
 
-  
-
   @Override
-  public void start(Stage primaryStage) {
+  public void start(Stage primaryStage) throws FileNotFoundException {
 
     MinesweeperTile[][] grid = new MinesweeperTile[grid_count_width][grid_count_height];
     for (int i = 0; i < grid_count_width; i++) {
@@ -57,9 +62,6 @@ public class Main extends Application {
       }
     }
 
-
-    
-
     VBox root = new VBox();
 
     for (int i = 0; i < grid_count_width; i++) {
@@ -74,7 +76,7 @@ public class Main extends Application {
     highlightMechanic(grid);
 
     // reveal tile
-    revealAndFlag(grid,mine_labels);
+    revealAndFlag(grid, stack_panes, mine_labels);
 
     Scene scene = new Scene(root, window_width*2, window_width+10);
       
@@ -88,13 +90,13 @@ public class Main extends Application {
     launch(args);
   }
 
-
   public void highlightMechanic(MinesweeperTile[][] grid) {
     for (int i = 0; i < grid_count_width; i++) {
       for (int j = 0; j < grid_count_height; j++) {
         MinesweeperTile r = grid[i][j];
         r.setOnMouseEntered(e -> {
-          r.setStyle("-fx-fill: red; -fx-stroke: black; -fx-stroke-width: 1;");
+          if (!r.isBomb)
+            r.setStyle("-fx-fill: red; -fx-stroke: black; -fx-stroke-width: 1;");
         });
         r.setOnMouseExited(e -> {
           if (!isDead) {
@@ -104,7 +106,6 @@ public class Main extends Application {
       }
     }
   }
-
 
   public void setMineLabelsIfTheyAreRevealed(MinesweeperTile[][] grid, Text[][] text) {
     for (int i = 0; i < grid_count_width; i++) {
@@ -118,14 +119,13 @@ public class Main extends Application {
             text[i][j].setText(r.getAdjacentMines() + "");
             String color = mineCountToColor(mines);
             text[i][j].setStyle("-fx-fill: " + color + ";");
-
           }
         }
       }
     }
   }
 
-  public void revealAndFlag(MinesweeperTile[][] grid, Text[][] text) {
+  public void revealAndFlag(MinesweeperTile[][] grid, StackPane[][] stack_panes, Text[][] text) throws FileNotFoundException {
 
     // on right click reveal the tile or ctrl + primary click
     for (int i = 0; i < grid_count_width; i++) {
@@ -133,10 +133,10 @@ public class Main extends Application {
 
         MinesweeperTile r = grid[i][j];
         r.setOnMouseClicked(e -> {
-
           if (!haveMinesBeenGenerated) {
             GameUtils.generateMines(grid, r.getPoint(), num_mines, grid_count_width, grid_count_height);
             haveMinesBeenGenerated = true;
+            
             return; 
           }
 
@@ -158,13 +158,24 @@ public class Main extends Application {
           if (e.getButton().toString().equals("PRIMARY") && !e.isControlDown()) {
             System.out.println("left");
             r.setFlagged(true);
-            r.setStyleFromBooleanFlags();
+            r.setStyleFromBooleanFlags();  
+            //Creating an image 
+            try {
+                Image image = new Image(new FileInputStream("flag.png"));
+                ImageView imageView = new ImageView(image); 
+                //setting the fit height and width of the image view 
+                imageView.setFitHeight(39); 
+                imageView.setFitWidth(39); 
+                stack_panes[r.getPoint().getX()][r.getPoint().getY()].getChildren().addAll();
+              } catch (IOException e) {
+                  e.printStackTrace(); 
+                  // handle exception correctly.
+              }
           }
-
         });
+                
       }
     }
-
   }
 
   public String mineCountToColor(int minecount) {
@@ -191,5 +202,18 @@ public class Main extends Application {
         return "white";
     }
   }
+  //picturehandler(r, i, j, stack_panes, grid);          
+  public void picturehandler(MinesweeperTile r, int i, int j, StackPane[][] stack_panes, MinesweeperTile[][] grid) throws FileNotFoundException {
+      //Creating an image 
+      Image image = new Image(new FileInputStream("flag.png"));  
+      
+      //Setting the image view 
+      ImageView imageView = new ImageView(image); 
 
+      
+      //setting the fit height and width of the image view 
+      imageView.setFitHeight(39); 
+      imageView.setFitWidth(39); 
+      
+  }
 }

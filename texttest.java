@@ -22,19 +22,18 @@ public class texttest extends Application{
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException {
 
-
         int number = 1;
         Text text = new Text("" + number);
         //Creating an image 
-        Image image = new Image(new FileInputStream("pushaTest.jpg"));  
+        Image image = new Image(new FileInputStream("death.png"));  
     
         //Setting the image view 
         ImageView imageView = new ImageView(image); 
 
         
         //setting the fit height and width of the image view 
-        imageView.setFitHeight(30); 
-        imageView.setFitWidth(30); 
+        imageView.setFitHeight(39); 
+        imageView.setFitWidth(39); 
         
         //Setting the preserve ratio of the image view 
         imageView.setPreserveRatio(true);  

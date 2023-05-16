@@ -24,7 +24,6 @@ public class MinesweeperTile extends Rectangle {
         this.p = p; 
     }
     
-
     public boolean isBomb() {
         return isBomb;
     }
@@ -63,6 +62,7 @@ public class MinesweeperTile extends Rectangle {
             this.setStyle(STYLE_HIDDEN);
         }
     }
+
     public int getAdjacentMines() {
         return adjacentMines;
     }
@@ -70,6 +70,4 @@ public class MinesweeperTile extends Rectangle {
     public void setAdjacentMines(int adjacentMines) {
         this.adjacentMines = adjacentMines;
     }
-
-
 }
