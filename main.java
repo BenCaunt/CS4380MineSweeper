@@ -18,7 +18,7 @@ import javax.imageio.ImageIO;
 public class Main extends Application {
 
   int window_width = 600;
-  int grid_count_width = 25;
+  int grid_count_width = 15;
   int grid_count_height = grid_count_width; // square grid
   int grid_width = window_width / grid_count_width; 
   double mine_density = 0.10; // 10% of the grid is mines
@@ -144,7 +144,28 @@ public class Main extends Application {
           if (e.getButton().toString().equals("SECONDARY") || (e.getButton().toString().equals("PRIMARY") && e.isControlDown())) {
             GameUtils.reveal(grid, r);
             if (r.isBomb) {
+
+              String fileName = "death.png";
+              Image image = new Image(fileName);
+              ImageView imageView = new ImageView(image);      
+              
               GameUtils.failure(grid, grid_count_width);
+
+              // go through and reveal all the mines by adding the mine image to the stack plane
+              for (int k = 0; k < grid_count_width; k++) {
+                for (int l = 0; l < grid_count_height; l++) {
+                  MinesweeperTile tile = grid[k][l];
+                  if (tile.isBomb) {
+                    // calculate width and height based on the size of each rectangular tile 
+                    int width_height = (int) (window_width / grid_count_width);
+
+                    imageView.setFitHeight(width_height);
+                    imageView.setFitWidth(width_height);
+                    stack_panes[k][l].getChildren().add(imageView);
+                  }
+                }
+              }
+
               isDead = true; 
             } else { 
               // make the text on the tile the number of mines around it
