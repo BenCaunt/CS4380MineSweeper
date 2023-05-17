@@ -5,7 +5,11 @@ import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
+
+import java.io.File;
 import java.io.FileInputStream; 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;  
@@ -15,7 +19,7 @@ import java.io.IOException;
 public class Main extends Application {
 
   int window_width = 600;
-  int grid_count_width = 9;
+  int grid_count_width = 10;
   int grid_count_height = grid_count_width; // square grid
   int grid_width = window_width / grid_count_width; 
   double mine_density = 0.10; // 10% of the grid is mines
@@ -29,6 +33,14 @@ public class Main extends Application {
 
   @Override
   public void start(Stage primaryStage) throws FileNotFoundException {
+
+    String startingSound = "RoleReveal.wav";
+    Media sound = new Media(new File(startingSound).toURI().toString());
+
+    MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    mediaPlayer.play();
+
+
 
     MinesweeperTile[][] grid = new MinesweeperTile[grid_count_width][grid_count_height];
     for (int i = 0; i < grid_count_width; i++) {
@@ -93,7 +105,7 @@ public class Main extends Application {
       for (int j = 0; j < grid_count_height; j++) {
         MinesweeperTile r = grid[i][j];
         r.setOnMouseEntered(e -> {
-          if (!r.isBomb)
+          if (!r.isRevealed && !isDead && !r.isFlagged)
             r.setStyle("-fx-fill: red; -fx-stroke: black; -fx-stroke-width: 1;");
         });
         r.setOnMouseExited(e -> {
@@ -111,9 +123,9 @@ public class Main extends Application {
         StackPane p = stack_panes[i][j];
         MinesweeperTile r = grid[i][j];
         if (r.isRevealed) {
-          if (p.getChildren().remove(1) instanceof ImageView){
-            p.getChildren().remove(1);
-          }
+          // safely remove the ImageView node
+          p.getChildren().removeIf(node -> node instanceof ImageView);
+  
           int mines = r.getAdjacentMines(); 
           if (mines == 0) {
             text[i][j].setText("");
@@ -146,6 +158,14 @@ public class Main extends Application {
           if (e.getButton().toString().equals("SECONDARY") || (e.getButton().toString().equals("PRIMARY") && e.isControlDown())) {
             GameUtils.reveal(grid, r);
             if (r.isBomb) {
+
+              String soundFile = "DefeatSound.wav";
+
+              Media sound = new Media(new File(soundFile).toURI().toString());
+              MediaPlayer mediaPlayer = new MediaPlayer(sound);
+              mediaPlayer.play();
+              
+
               String fileName = "death.png";
               Image image = new Image(fileName);
               ImageView imageView = new ImageView(image);      
@@ -171,6 +191,11 @@ public class Main extends Application {
             } else { 
               // make the text on the tile the number of mines around it
               if(GameUtils.checkForWin(grid)) {
+                String winSound = "victorySound.wav";
+                Media sound = new Media(new File(winSound).toURI().toString());
+                MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                mediaPlayer.play();
+
                 GameUtils.success(grid, grid_count_width);
               }
               setMineLabelsIfTheyAreRevealed(grid, stack_panes, text);
