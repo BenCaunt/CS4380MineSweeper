@@ -164,11 +164,15 @@ public class Main extends Application {
                 Image image = new Image(new FileInputStream("flag.png"));
                 ImageView imageView = new ImageView(image); 
                 //setting the fit height and width of the image view 
-                imageView.setFitHeight(39); 
-                imageView.setFitWidth(39); 
-                stack_panes[r.getPoint().getX()][r.getPoint().getY()].getChildren().addAll();
-              } catch (IOException e) {
-                  e.printStackTrace(); 
+
+                // calculate width and height based on the size of each rectangular tile 
+                int width_height = (int) (window_width / grid_count_width);
+
+                imageView.setFitHeight(width_height); 
+                imageView.setFitWidth(width_height); 
+                stack_panes[r.getPoint().getX()][r.getPoint().getY()].getChildren().addAll(imageView);
+              } catch (IOException f) {
+                  f.printStackTrace(); 
                   // handle exception correctly.
               }
           }
