@@ -10,10 +10,7 @@ import java.io.FileInputStream;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;  
 import java.io.FileNotFoundException; 
-import java.io.File;
 import java.io.IOException;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
 
 public class Main extends Application {
 
@@ -40,9 +37,7 @@ public class Main extends Application {
         grid[i][j] = new MinesweeperTile(grid_width, grid_width, new Point(i, j));
       }
     }
-
-
-
+    
     // labels for each tile, will start off blank, then when the associated tile is revealed, will show the number of mines around it
     Text[][] mine_labels = new Text[grid_count_width][grid_count_height];
     for (int i = 0; i < grid_count_width; i++) {
@@ -50,18 +45,19 @@ public class Main extends Application {
         mine_labels[i][j] = new Text("");
       }
     }
-
+    
     // stack plane so labels are on top of tiles
     StackPane[][] stack_panes = new StackPane[grid_count_width][grid_count_height];
     for (int i = 0; i < grid_count_width; i++) {
       for (int j = 0; j < grid_count_height; j++) {
         stack_panes[i][j] = new StackPane();
+        String fileName = "default.png";
+        Image image = new Image(fileName);
+        ImageView imageView = new ImageView(image);  
         // make it so the text is on top of the tile
-        stack_panes[i][j].getChildren().add(grid[i][j]);
-        stack_panes[i][j].getChildren().add(mine_labels[i][j]);
+        stack_panes[i][j].getChildren().addAll(imageView, grid[i][j],mine_labels[i][j]); 
       }
     }
-
     VBox root = new VBox();
 
     for (int i = 0; i < grid_count_width; i++) {
@@ -130,21 +126,20 @@ public class Main extends Application {
     // on right click reveal the tile or ctrl + primary click
     for (int i = 0; i < grid_count_width; i++) {
       for (int j = 0; j < grid_count_height; j++) {
-
-        MinesweeperTile r = grid[i][j];
-        r.setOnMouseClicked(e -> {
+        StackPane p = stack_panes[i][j];
+        MinesweeperTile r = (MinesweeperTile) p.getChildren().get(1);
+        p.setOnMouseClicked(e -> {
           if (!haveMinesBeenGenerated) {
             GameUtils.generateMines(grid, r.getPoint(), num_mines, grid_count_width, grid_count_height);
             haveMinesBeenGenerated = true;
             
             return; 
           }
-
+          
           // reveal 
           if (e.getButton().toString().equals("SECONDARY") || (e.getButton().toString().equals("PRIMARY") && e.isControlDown())) {
             GameUtils.reveal(grid, r);
             if (r.isBomb) {
-
               String fileName = "death.png";
               Image image = new Image(fileName);
               ImageView imageView = new ImageView(image);      
@@ -165,7 +160,6 @@ public class Main extends Application {
                   }
                 }
               }
-
               isDead = true; 
             } else { 
               // make the text on the tile the number of mines around it
@@ -176,27 +170,27 @@ public class Main extends Application {
             }
           }
           // flag
-          if (e.getButton().toString().equals("PRIMARY") && !e.isControlDown()) {
+          if (e.getButton().toString().equals("PRIMARY") && !e.isControlDown() && !r.isRevealed) {
             System.out.println("left");
-            r.setFlagged(true);
-            r.setStyleFromBooleanFlags();  
             //Creating an image 
-            try {
-                Image image = new Image(new FileInputStream("flag.png"));
-                ImageView imageView = new ImageView(image); 
-                //setting the fit height and width of the image view 
-
-                // calculate width and height based on the size of each rectangular tile 
-                int width_height = (int) (window_width / grid_count_width);
-
-                imageView.setFitHeight(width_height); 
-                imageView.setFitWidth(width_height); 
-                stack_panes[r.getPoint().getX()][r.getPoint().getY()].getChildren().addAll(imageView);
-              } catch (IOException f) {
-                  f.printStackTrace(); 
-                  // handle exception correctly.
-              }
+            if (!r.isFlagged) {
+              r.setFlagged(true);
+              r.setStyleFromBooleanFlags();  
+              String fileName = "flag.png";
+              Image image = new Image(fileName);
+              ImageView imageView = new ImageView(image);  
+              p.getChildren().remove(0);
+              p.getChildren().addAll(imageView);
+            } else {
+              r.setFlagged(false);
+              p.getChildren().remove(p.getChildren().size()-1);
+              String fileName = "default.png";
+              Image image = new Image(fileName);
+              ImageView imageView = new ImageView(image);  
+              p.getChildren().addAll(imageView);
+            }
           }
+          
         });
                 
       }
@@ -208,11 +202,11 @@ public class Main extends Application {
       case 0:
         return "white"; 
       case 1:
-        return "DodgerBlue";
+        return "e9d8a6";
       case 2:
-        return "Green"; 
+        return "ca6702"; 
       case 3:
-        return "Red"; 
+        return "ee9b00"; 
       case 4:
         return "DarkBlue";
       case 5:

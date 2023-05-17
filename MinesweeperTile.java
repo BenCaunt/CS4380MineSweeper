@@ -10,7 +10,7 @@ public class MinesweeperTile extends Rectangle {
 
 
     public static final String STYLE_HIDDEN = "-fx-fill: white; -fx-stroke: black; -fx-stroke-width: 1;";
-    public static final String STYLE_REVEALED = "-fx-fill: #005F73; -fx-stroke: #004452; -fx-stroke-width: 1;";
+    public static final String STYLE_REVEALED = "-fx-fill: #94d2bd; -fx-stroke: #005F73; -fx-stroke-width: 1;";
     public static final String STYLE_FLAGGED = "-fx-fill: blue; -fx-stroke: black; -fx-stroke-width: 1;";
     public static final String STYLE_BOMB = "-fx-fill: black; -fx-stroke: black; -fx-stroke-width: 1;";
     public static final String STYLE_HIGHLIGHT = "-fx-fill: red; -fx-stroke: black; -fx-stroke-width: 1;";
