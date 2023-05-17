@@ -155,7 +155,7 @@ public class Main extends Application {
           }
           
           // reveal 
-          if (e.getButton().toString().equals("SECONDARY") || (e.getButton().toString().equals("PRIMARY") && e.isControlDown())) {
+          if (e.getButton().toString().equals("SECONDARY") || (e.getButton().toString().equals("PRIMARY") && e.isControlDown() &&!r.isFlagged)) {
             GameUtils.reveal(grid, r);
             if (r.isBomb) {
 
