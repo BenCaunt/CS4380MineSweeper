@@ -15,7 +15,7 @@ import java.io.IOException;
 public class Main extends Application {
 
   int window_width = 600;
-  int grid_count_width = 15;
+  int grid_count_width = 9;
   int grid_count_height = grid_count_width; // square grid
   int grid_width = window_width / grid_count_width; 
   double mine_density = 0.10; // 10% of the grid is mines
@@ -54,8 +54,10 @@ public class Main extends Application {
         String fileName = "default.png";
         Image image = new Image(fileName);
         ImageView imageView = new ImageView(image);  
+        imageView.setFitHeight(grid_width); 
+        imageView.setFitWidth(grid_width); 
         // make it so the text is on top of the tile
-        stack_panes[i][j].getChildren().addAll(imageView, grid[i][j],mine_labels[i][j]); 
+        stack_panes[i][j].getChildren().addAll(grid[i][j],imageView, mine_labels[i][j]); 
       }
     }
     VBox root = new VBox();
@@ -69,7 +71,7 @@ public class Main extends Application {
     }
 
     // we want to highlight the grid when the mouse is over it
-    highlightMechanic(grid);
+    // highlightMechanic(grid);
 
     // reveal tile
     revealAndFlag(grid, stack_panes, mine_labels);
@@ -103,11 +105,15 @@ public class Main extends Application {
     }
   }
 
-  public void setMineLabelsIfTheyAreRevealed(MinesweeperTile[][] grid, Text[][] text) {
+  public void setMineLabelsIfTheyAreRevealed(MinesweeperTile[][] grid, StackPane[][] stack_panes, Text[][] text) {
     for (int i = 0; i < grid_count_width; i++) {
       for (int j = 0; j < grid_count_height; j++) {
+        StackPane p = stack_panes[i][j];
         MinesweeperTile r = grid[i][j];
         if (r.isRevealed) {
+          if (p.getChildren().remove(1) instanceof ImageView){
+            p.getChildren().remove(1);
+          }
           int mines = r.getAdjacentMines(); 
           if (mines == 0) {
             text[i][j].setText("");
@@ -127,7 +133,7 @@ public class Main extends Application {
     for (int i = 0; i < grid_count_width; i++) {
       for (int j = 0; j < grid_count_height; j++) {
         StackPane p = stack_panes[i][j];
-        MinesweeperTile r = (MinesweeperTile) p.getChildren().get(1);
+        MinesweeperTile r = (MinesweeperTile) p.getChildren().get(0);
         p.setOnMouseClicked(e -> {
           if (!haveMinesBeenGenerated) {
             GameUtils.generateMines(grid, r.getPoint(), num_mines, grid_count_width, grid_count_height);
@@ -143,9 +149,10 @@ public class Main extends Application {
               String fileName = "death.png";
               Image image = new Image(fileName);
               ImageView imageView = new ImageView(image);      
-              
+              imageView.setFitHeight(grid_width); 
+              imageView.setFitWidth(grid_width); 
               GameUtils.failure(grid, grid_count_width);
-
+              p.getChildren().add(imageView);
               // go through and reveal all the mines by adding the mine image to the stack plane
               for (int k = 0; k < grid_count_width; k++) {
                 for (int l = 0; l < grid_count_height; l++) {
@@ -154,8 +161,8 @@ public class Main extends Application {
                     // calculate width and height based on the size of each rectangular tile 
                     int width_height = (int) (window_width / grid_count_width);
 
-                    imageView.setFitHeight(width_height);
-                    imageView.setFitWidth(width_height);
+                    imageView.setFitHeight(grid_width);
+                    imageView.setFitWidth(grid_width);
                     stack_panes[k][l].getChildren().add(imageView);
                   }
                 }
@@ -166,7 +173,7 @@ public class Main extends Application {
               if(GameUtils.checkForWin(grid)) {
                 GameUtils.success(grid, grid_count_width);
               }
-              setMineLabelsIfTheyAreRevealed(grid, text);
+              setMineLabelsIfTheyAreRevealed(grid, stack_panes, text);
             }
           }
           // flag
@@ -179,7 +186,9 @@ public class Main extends Application {
               String fileName = "flag.png";
               Image image = new Image(fileName);
               ImageView imageView = new ImageView(image);  
-              p.getChildren().remove(0);
+              imageView.setFitHeight(grid_width); 
+              imageView.setFitWidth(grid_width); 
+              p.getChildren().remove(1);
               p.getChildren().addAll(imageView);
             } else {
               r.setFlagged(false);
@@ -187,6 +196,8 @@ public class Main extends Application {
               String fileName = "default.png";
               Image image = new Image(fileName);
               ImageView imageView = new ImageView(image);  
+              imageView.setFitHeight(grid_width); 
+              imageView.setFitWidth(grid_width); 
               p.getChildren().addAll(imageView);
             }
           }
