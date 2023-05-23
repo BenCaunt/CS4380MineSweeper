@@ -1,3 +1,8 @@
+// Minesweeper
+// Myles Green and Ben Caunt
+// 5/23/23
+// uhhh it's like that one game. 
+// Honor Code Pledge - MYLES GREEN & BEN CAUNT
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -18,6 +23,7 @@ import java.io.IOException;
 
 public class Main extends Application {
 
+  //set it up 
   int window_width = 600;
   int grid_count_width = 10;
   int grid_count_height = grid_count_width; // square grid
@@ -33,7 +39,7 @@ public class Main extends Application {
 
   @Override
   public void start(Stage primaryStage) throws FileNotFoundException {
-
+    //atmosphere 
     String startingSound = "RoleReveal.wav";
     Media sound = new Media(new File(startingSound).toURI().toString());
 
@@ -41,7 +47,7 @@ public class Main extends Application {
     mediaPlayer.play();
 
 
-
+    //initialize the field 
     MinesweeperTile[][] grid = new MinesweeperTile[grid_count_width][grid_count_height];
     for (int i = 0; i < grid_count_width; i++) {
       for (int j = 0; j < grid_count_height; j++) {
@@ -99,7 +105,7 @@ public class Main extends Application {
   public static void main(String[] args) {
     launch(args);
   }
-
+  //if the mouse is over a tile, highlight (it's a lil ugly)
   public void highlightMechanic(MinesweeperTile[][] grid) {
     for (int i = 0; i < grid_count_width; i++) {
       for (int j = 0; j < grid_count_height; j++) {
@@ -116,7 +122,7 @@ public class Main extends Application {
       }
     }
   }
-
+  //if a node is a revealed set it's label with text based on it's neighbors
   public void setMineLabelsIfTheyAreRevealed(MinesweeperTile[][] grid, StackPane[][] stack_panes, Text[][] text) {
     for (int i = 0; i < grid_count_width; i++) {
       for (int j = 0; j < grid_count_height; j++) {
@@ -146,6 +152,8 @@ public class Main extends Application {
       for (int j = 0; j < grid_count_height; j++) {
         StackPane p = stack_panes[i][j];
         MinesweeperTile r = (MinesweeperTile) p.getChildren().get(0);
+        
+        //first click case. Creates the board
         p.setOnMouseClicked(e -> {
           if (!haveMinesBeenGenerated) {
             GameUtils.generateMines(grid, r.getPoint(), num_mines, grid_count_width, grid_count_height);
@@ -157,6 +165,7 @@ public class Main extends Application {
           // reveal 
           if (e.getButton().toString().equals("SECONDARY") || (e.getButton().toString().equals("PRIMARY") && e.isControlDown() &&!r.isFlagged)) {
             GameUtils.reveal(grid, r);
+            // loss case
             if (r.isBomb) {
 
               String soundFile = "DefeatSound.wav";
@@ -178,9 +187,7 @@ public class Main extends Application {
                 for (int l = 0; l < grid_count_height; l++) {
                   MinesweeperTile tile = grid[k][l];
                   if (tile.isBomb) {
-                    // calculate width and height based on the size of each rectangular tile 
-                    int width_height = (int) (window_width / grid_count_width);
-
+                    
                     imageView.setFitHeight(grid_width);
                     imageView.setFitWidth(grid_width);
                     stack_panes[k][l].getChildren().add(imageView);
@@ -189,7 +196,7 @@ public class Main extends Application {
               }
               isDead = true; 
             } else { 
-              // make the text on the tile the number of mines around it
+              // win case 
               if(GameUtils.checkForWin(grid)) {
                 String winSound = "victorySound.wav";
                 Media sound = new Media(new File(winSound).toURI().toString());
@@ -202,7 +209,7 @@ public class Main extends Application {
             }
           }
           // flag
-          if (e.getButton().toString().equals("PRIMARY") && !e.isControlDown() && !r.isRevealed) {
+          if (e.getButton().toString().equals("PRIMARY") && !e.isControlDown() && !r.isRevealed && !r.isFlagged) {
             System.out.println("left");
             //Creating an image 
             if (!r.isFlagged) {

@@ -1,5 +1,7 @@
 import javafx.scene.shape.Rectangle;
 
+// custom selfaware object for the tiles. 
+// can set and get its bomb, reveal, and flag status, as well as how many mines are in it's vicinity. 
 public class MinesweeperTile extends Rectangle {
 
     boolean isBomb;

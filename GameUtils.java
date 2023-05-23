@@ -2,9 +2,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-
 public class GameUtils {
 
     /**
@@ -14,6 +11,7 @@ public class GameUtils {
      * @return the neighbors of the tile
      */
     
+    // gets neighbors; accounting for the walls and corners
     public static List<MinesweeperTile> getNeighbors(MinesweeperTile[][] grid, MinesweeperTile t) {
 
         List<MinesweeperTile> neighbors = new ArrayList<MinesweeperTile>();
@@ -130,10 +128,8 @@ public class GameUtils {
     
         return adjacentMines;
     }
- 
+    // on loss, red board
     public static void failure(MinesweeperTile[][] grid, int dim) {
-
-        // bomb image 
         
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j < dim; j++) {
@@ -149,7 +145,8 @@ public class GameUtils {
             }
         }
     }    
-
+    
+    // when no tile that are not bombs are unrevealed, you win
     public static boolean checkForWin(MinesweeperTile[][] grid) {
         for (MinesweeperTile[] row : grid) {
             for (MinesweeperTile tile : row) {
@@ -160,7 +157,7 @@ public class GameUtils {
         }
         return true;
     }
-
+    // on win, green board
     public static void success(MinesweeperTile[][] grid, int dim) {
         
         for (int i = 0; i < dim; i++) {
